@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import date
 
 FILE_NAME = "expenses.json"
 
@@ -21,6 +22,55 @@ def show_menu():
     print("4. Show results")
     print("5. Exit")
 
+def add_expenses(expenses):
+    try:
+        amount = float(input("Sum: "))
+    except ValueError:
+        print("Error: sum should be a number!")
+        return
+
+    if amount <= 0:
+        print("Error: sum should be a positive number!")
+        return
+
+    category = input("Category (food, transport, education...): ").strip()
+    if category == "":
+        print("Error: category cannot be empty!")
+        return
+
+    description = input("Description: ").strip()
+
+    if len(expenses) == 0:
+        new_id = 1
+    else:
+        new_id = expenses[-1]["id"] + 1
+
+    expense = {
+        "id": new_id,
+        "amount": amount,
+        "category": category,
+        "description": description,
+        "date": str(date.today()),
+    }
+
+    expenses.append(expense)
+    save_expenses(expenses)
+    print("Expense added!")
+
+def show_expenses(expenses):
+    if len(expenses) == 0:
+        print("Error: expenses cannot be empty!")
+        return
+
+    print("ID | Date | Amount | Category | Description")
+    print("-" * 55)
+    for expense in expenses:
+        print(
+            f"{expense['id']:<3}| {expense['date']} |"
+            f"{expense['amount']:<8} | {expense['category']:<10} | "
+            f"{expense['description']}"
+        )
+
 def main():
     expenses = load_expenses()
 
@@ -28,7 +78,13 @@ def main():
         show_menu()
         choice = input("Enter your choice: ")
 
-        if choice == "5":
+        if choice == "1":
+            add_expenses(expenses)
+
+        elif choice == "2":
+            show_expenses(expenses)
+
+        elif choice == "5":
             print("Bye!")
             break
         else:
