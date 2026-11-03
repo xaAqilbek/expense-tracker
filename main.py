@@ -92,6 +92,25 @@ def remove_expenses(expenses):
             return
     print("Error: no expense with that ID was found!")
 
+def show_results(expenses):
+    if len(expenses) == 0:
+        print("No expenses to show.")
+        return
+
+    total = 0
+    by_category = {}
+
+    for expense in expenses:
+        total += expense["amount"]
+        category = expense["category"]
+        by_category[category] = by_category.get(category, 0) + expense["amount"]
+
+    print("=== Total expenses ===")
+    for category, amount in by_category.items():
+        print(f"{category:<12}: {amount}")
+    print("-" * 25)
+    print(f"{'Total':<12}: {total}")
+
 def main():
     expenses = load_expenses()
 
@@ -107,6 +126,9 @@ def main():
 
         elif choice == "3":
             remove_expenses(expenses)
+
+        elif choice == "4":
+            show_results(expenses)
 
         elif choice == "5":
             print("Bye!")
